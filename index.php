@@ -10,22 +10,45 @@
 include("config.php");
 
 
+// loops trough the jsonn filew 
+
+
+
+
+
+
 $inputCode = 1;
 $postMade = false;
-$videoResult = 'none';
+$videoResult = 'none';  // determined if the video output is vissible 
+$inputEquealArray = false; 
+$videoArray = 'none';   // meassge video in array but not uploaded yet
+$searhElement = 'block'; // hide when video is found  
 
 //This is input from the input field when form submit
 if(isset($_POST['submit'])) {
   $inputCode = $_POST['inputCode'];
-  echo("<script>console.log('button pressed');</script>");
+  // echo("<script>console.log('button pressed');</script>");
   $postMade = true;
+  
+
+  $fileJsonContent = file_get_contents("http://www.vliscowm2020.com/vlisco/8000_codes.json"); // change file so php can understand 
+  $obj = json_decode($fileJsonContent, TRUE);
+
+  // loops trough array of codes and looks if it is equal to the input
+  foreach($obj as $item) 
+  {
+    if(strcasecmp($inputCode, $item) ==0){ // strcasecmp makes it independent capital or small letters
+      $inputEquealArray = true; 
+    }
+  }
  
 }
 
-// looks if there is some input if not there is a message
+// looks if there is some input if not there is a message "please enter a code"
 if($inputCode == null || $inputCode == '' ){
   $inputZero ="block";
   $result='none';
+  $videoResult = 'none';
 }
 else{
   $inputZero ="none";
@@ -38,7 +61,7 @@ $filecount = 0;
 $files = glob($directory . "*");
 
 if ($files){
- $filecount = count($files);
+ $filecount = count($files); // is the total files found in the folder
 }
 
 
@@ -53,21 +76,44 @@ for ($i = 0; $i <= $filecount; $i++){
       // removes the extensions from the files found
       $file= pathinfo($file, PATHINFO_FILENAME);
 
-      if( $inputCode == $file){
-        echo("<script>console.log('file is ".$file." found');</script>");
+      if(strcasecmp($inputCode,$file) ==0){ // checks if input is equal to videos in video folder, capital or small letters 
+        // echo("<script>console.log('file is ".$file." found');</script>");
         $result='none';
-        $videoResult = 'block';
+
+        $inputCode = $file;
+        
+        if($inputZero =="block"){// checks if there is any input if not then the video div is hidden 
+          $videoResult = 'none';
+        }else{
+          $videoResult = 'block';
+          $searhElement= 'none'; // search element will be hidden 
+        }
+        
         $i=$filecount +1;
-      break;
+        break;
       } 
 
+      // input is not eguaql to videos found, but is to video array show message: video will upload later
+      if( $i == $filecount && $inputEquealArray == true ){
+        
+        if($postMade == true){
+          // echo("<script>console.log('Your video code is found');</script>");
+          $result='none';
+          $videoArray = 'block';
+          $videoResult = 'none';
+        }
+      break;
+    } 
+      // your video is not found and will never exist
       if( $i == $filecount){
-          echo("<script>console.log('file is not found');</script>");
+         
           if($postMade == true){
+            // echo("<script>console.log('file is not found');</script>");
             $result='block';
+            $videoResult = 'none';
           }
         break;
-        }      
+      }      
     }
 }
 
@@ -82,46 +128,55 @@ for ($i = 0; $i <= $filecount; $i++){
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.plyr.io/2.0.15/plyr.css">
+   <link rel="stylesheet" type="text/css" href="/css/custom.css">  
 
-    <title>Download your video</title>
+    <title>Vlisco - Women’s Month Installation</title>
   </head>
   <body>
       
   <header>
-  <div class="navbar navbar-dark bg-dark shadow-sm">
     <div class="container">
-      <a href="#" class="navbar-brand d-flex align-items-center">
-        <strong>vlisco</strong>
-      </a>
+      <div class="logo">
+        <a class="logo" href="https://www.vlisco.com">
+          <img src="http://www.vliscowm2020.com/img/VLISCO_LOGO.jpg" alt="Vlisco" width="150">
+        </a>
+      <div>
+      <p class="translateButton">
+          <a class="english" href="http://www.vliscowm2020.com">EN</a>
+          <a class="french" href="http://www.vliscowm2020.com/fr">FR</a>
+      </p>
     </div>
-  </div>
 </header>
 
 <main role="main">
-
-  <section class="py-5 text-center container">
+  <section class="py-5 text-center container" style="display: <?php echo $searhElement; ?>  ;">
     <div class="row py-lg-5">
       <div class="col-lg-6 col-md-8 mx-auto">
-        <h1 class="font-weight-light">Find your video!</h1>
-        <p class="lead text-muted">Fill in your code and download your video.</p>
+        <h1 class="videoText">Find your video</h1>
+        <p class="lead text-muted">Fill in your code and download your video</p>
         <p>
           <!-- <a href="/uploadwebsite/videos/'+id+'.mp4" class="btn btn-primary my-2" download>Download</a> -->
           <a href=""  onclick="this.href = <?php echo $inputZero; ?>" download hidden></a>  
 
-          <form action="index.php" method="post">
+          <form action="http://www.vliscowm2020.com" method="post">
             
             <div class="form-group mx-sm-3 mb-2">
               <label for="inputCode" class="sr-only"></label>
-              <input type="text" class="form-control" id="inputCode" name="inputCode" placeholder="Fill here your code in">
+              <input class="inputField"type="text" class="form-control" id="inputCode" name="inputCode" placeholder="Enter your code here" maxlength="4">
             </div>
           
             <div id="removeMessage">
               <div class="alert alert-danger" role="alert" style="display: <?php echo $inputZero; ?>  ;">
-                    Please enter a code
+                    Please enter a code.
               </div>
 
               <div class="alert alert-danger" role="alert" style="display: <?php echo $result; ?>  ;">
-                    Sorry your video isn't found, perhaps you entered the wrong code
+                      Sorry, you entered an invalid code, please try again.
+              </div>
+
+              <div class="alert alert-danger" role="alert" style="display: <?php echo $videoArray; ?>  ;">
+                    Your video isn't online yet! please try again later.  
               </div>
               </div>
             
@@ -139,80 +194,313 @@ for ($i = 0; $i <= $filecount; $i++){
   
 <div class="showOnSearch" style="display: <?php echo $videoResult; ?>  ;">
  <div class="container">
- <div class="row">
-   Share your video with your friends
-
-   <a href="https://web.whatsapp.com/send?text=checkThisVideo" data-text="Take a look at this awesome website:" data-href="/uploadwebsite/videos/A1.mp4" class="wa_btn wa_btn_s" style="display:block">
-   <button type="button" class="btn btn-primary">share whatsapp</button>
-   </a>
-  
-  
- </div>
- <div class="row">
-        <video width="100%" height="auto" controls>
-            <source id="videoCode" src="/uploadwebsite/videos/<?php echo $inputCode; ?>.mp4" type="video/mp4">  
-        </video>
-
-       
-
-        <a href="/uploadwebsite/videos/<?php echo $inputCode; ?>.mp4" value="Download2"  download>
-        <button type="button" class="btn btn-primary">Download</button>
-        </a>
-      </div>
-      
+  <div class="row">
+  <!-- <video  controls="controls" height="auto" preload="auto" src="https://stud.hosted.hr.nl/0931703/vlisco/videos/<?php echo $inputCode; ?>.mp4" style="object-fit: contain;" width="600" playsinline></video> -->
+    <div class="videoElement">
+      <video  width= "100%" height="auto" auto id="plyr-video" poster="http://www.vliscowm2020.com/img/THUMBNAIL_PLACEHOLDER.jpg"  controls playsinline>
+              <source id="videoCode" src="http://www.vliscowm2020.com/videos/<?php echo $inputCode; ?>.mp4" type="video/mp4">  <!-- "/uploadwebsite/videos/<?php echo $inputCode; ?>.mp4"   "https://stud.hosted.hr.nl/0931703/vlisco/videos/<?php echo $inputCode; ?>.mp4" -->
+      </video>
+      <br>
     </div>
   </div>
+  <div class="row">
+  <div class="button">  
+      <a  href="videos/<?php echo $inputCode; ?>.mp4" download>
+          <button type="button" class="btn btn-primary">Download your video</button>
+      </a>
+  </div>  
+  </div>   
+    
+ 
+  <br>
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+      <br>
+      <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-8">
 
+           
+              <a class="show-mobile" href="https://api.whatsapp.com/send?text=http://www.vliscowm2020.com/videos/<?php echo $inputCode; ?>.mp4" data-action="share/whatsapp/share">
+                  <img src="http://vliscowm2020.com/img/whatsapp.png" alt="whatsapp_logo" width="32" height="22.72">
+              </a>
+           
+              <a class="hide-mobile" href="https://web.whatsapp.com/send?text=http://www.vliscowm2020.com/videos/<?php echo $inputCode; ?>.mp4">
+                  <img src="http://www.vliscowm2020.com/img/whatsapp.png" alt="whatsapp_logo" width="32" height="22.72">
+             </a>
+          
+            <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.vliscowm2020.com/videos/<?php echo $inputCode; ?>.mp4" target="_blank" rel="noopener">
+              <img src="http://www.vliscowm2020.com/img/facebook.png" alt="facebook_logo" width="32" height="32">
+            </a>
+            <a href="https://twitter.com/intent/tweet?url=URL&text=http://www.vliscowm2020.com/videos/<?php echo $inputCode; ?>.mp4" target="_blank" rel="noopener">
+              <img src="http://www.vliscowm2020.com/img/twitter.png" alt="twitter_logo" width="32" height="32">
+            </a>
+          </div>
+          <div class="col-sm-2"></div>
+        </div>
+       </div>
+    <div class="col-sm-2"></div>
+  </div>
+  
 
-  <div class="album py-5 bg-light">
 
   </div>
+</div>
+
+
+
+
+
+
+  
 
 </main>
 
-<footer class="text-muted py-5">
-  
+<footer class="footer">
+    <H1 class="footerLink">
+      <a  class="footerLink" href="https://twitter.com/vlisco" >#VLISCOWOMENSMONTH2020</a>
+    </H1>
 </footer>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.plyr.io/2.0.15/plyr.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <script>
+     
+    
 
+      // makes de video element plyr.io rady 
+     plyr.setup("#plyr-video", {captions: {active: false}});
+ 
 
-        function showInput() {
-          //console.log("Download button preset"); 
-
-          var code = document.getElementById("videoCode").value;
-          console.log(code);
-
-            if(code == null || code == ''){
-
-            }
-              else{
-                /// This link should be changed to the right link
-                url = '/uploadwebsite/videos/'+code+'.mp4'
-                document.getElementById('download').click();  
-              }                 
-            
-          }
 
           function removeWarning() {
               document.getElementById("removeMessage").innerHTML = "";
           }
 
           document.getElementById("inputCode").onkeyup = removeWarning;
+
+        
     </script>
 
     <style  scoped>
 
-      .btn-primary{
-        margin: 40px;
+@font-face {
+      font-family: 'Avenir-Next1';
+        src: url("http://www.vliscowm2020.com/fonts/Avenir-Next.ttc");
+      }
+
+      @font-face {
+      font-family: 'AvenirNextLTW01-medium';
+        src: url("http://www.vliscowm2020.com/fonts/avenir-medium.ttf");
+    
+      }
+
+      @font-face {
+      font-family: 'AvenirNextLTW01-regular';
+        src: url("http://www.vliscowm2020.com/fonts/avenir-regular.ttf");
+    
+      }
+
+      .main{
+        font-family: 'AvenirNextLTW01-Medium';
+     
+        width:   100%;
+        height:  100%;
+        margin:  auto;
+      }
+
+      .row.py-lg-5 {
+        font-family: 'AvenirNextLTW01-regular';
+     
+        height:  60%;
+        margin:  auto;
 
       }
+      .col-lg-6.col-md-8.mx-auto{
+        font-family: 'AvenirNextLTW01-regular';
+    
+        height:  40%;
+        margin:  auto;
+      }
+
+    .logo{
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .translateButton{
+      color: #000000;
+      font-family: 'AvenirNextLTW01-regular';
+
+      text-align: center;
+      margin-top: 20px;
+     
+    }
+
+    .translateButton a:link {
+      text-decoration: none;
+    }
+
+    .translateButton a:hover{
+      color: #000000; 
+    }
+
+    .english{  
+      font-weight: 200; 
+      color: #000000;  
+    }
+
+    .french{
+      font-weight: 200;
+      color: #808c96;   
+    }
+
+   
+    .videoText{
+      font-family: 'AvenirNextLTW01-medium';
+    }
+
+    .text-muted{
+      font-family: 'AvenirNextLTW01-regular';
+    }
+
+    .alert{
+      font-family: 'AvenirNextLTW01-regular';
+    }
+
+    .btn-primary{
+      font-family: 'AvenirNextLTW01-regular';
+      background-color: #333;
+      border-color: #333;
+    }
+    .btn-primary:hover{
+      background-color: #808c96 !important;
+      border-color: #808c96 !important;
+    }
+
+    .btn-primary:focus{
+      background-color: #808c96 !important;
+      border-color: #808c96  !important;
+    }
+
+    .footer{
+      
+      font-weight: 600;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .footerLink{
+      font-family: 'AvenirNextLTW01-medium';
+      color: #000000;
+    }
+
+    .footerLink a:link {
+      text-decoration: none;
+    }
+
+
+    .button{
+    
+      margin: auto;
+      }
+
+      .inputField{
+        text-align: center;
+        min-width: 250px;
+      }
+
+  
+    a:hover {
+    color: #808c96;
+    }
+
+
+      .pb-5, .py-5 {
+          padding-bottom: 0px;
+      }
+
+
+     @media (min-width: 600px) {
+
+       .videoElement{
+        max-width: 500px;
+        margin:  auto;
+        
+      }  
+        .show-mobile {
+          display: none;
+          max-width: 32px;
+        }
+        .hide-mobile {
+          display: inline;
+          max-width: 32px;
+         
+        }
+        .btn-primary{
+          min-width: 180px;
+        margin: auto;
+
+        }
+        .col-sm-8{
+          text-align: center;
+        }
+
+        .button{
+          min-width: 180px;
+          margin-right: 80px;
+      
+      width: 50%;
+      }
+
+        
+      }
+      @media (max-width: 600px) {
+
+      
+    .videoElement{
+        margin: 20px;
+        width: 100%;
+        height: auto;
+        
+      } 
+      .show-mobile {
+        display: inline;
+        max-width: 32px;
+      }
+      .hide-mobile {
+        display: none;
+        max-width: 32px;
+      }
+      .col-sm-8{
+          text-align: center;
+        }
+      .button{
+        min-width: 180px;
+        margin: auto;
+      width: 50%;
+      }
+
+      .footer{
+        font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .footerLink{
+      font-size: 17px;
+      color: #000000;
+    }
+    }
+
+ 
     </style>
 
   </body>
