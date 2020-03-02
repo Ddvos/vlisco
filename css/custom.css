@@ -1,0 +1,164 @@
+
+
+      @font-face {
+      font-family: 'Avenir Next';
+        src: url("http://www.circusfamilyprojects.nl/fonts/Avenir-Next.ttc");
+      }
+
+      .main{
+        width:   100%;
+        height:  100%;
+        margin:  auto;
+
+      
+      }
+
+      .h1{
+        font-family: 'Avenir Next';
+        font-weight: 100;
+      }
+
+      .row.py-lg-5 {
+        height:  60%;
+        margin:  auto;
+
+      }
+      .col-lg-6.col-md-8.mx-auto{
+        height:  40%;
+        margin:  auto;
+      }
+
+    .logo{
+      font-family:  "Avenir Next" ;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .translateButton{
+      color: #000000;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+   
+    .videoText{
+      font-family: 'Avenir Next';
+      font-weight: 100;
+    }
+
+    .btn-primary{
+      background-color: #333;
+      border-color: #333;
+    }
+    .btn-primary:hover{
+      background-color: #808c96 !important;
+      border-color: #808c96 !important;
+    }
+
+    .btn-primary:focus{
+      background-color: #808c96 !important;
+      border-color: #808c96  !important;
+    }
+
+    .footer{
+      
+      font-weight: 600;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .footerLink{
+      color: #000000;
+    }
+
+    .button{
+    
+      margin: auto;
+      }
+
+  
+    a:hover {
+    color: #808c96;
+    }
+
+
+      .pb-5, .py-5 {
+          padding-bottom: 0px;
+      }
+
+
+     @media (min-width: 600px) {
+
+       .videoElement{
+        max-width: 500px;
+        margin:  auto;
+        
+      }  
+        .show-mobile {
+          display: none;
+          max-width: 32px;
+        }
+        .hide-mobile {
+          display: inline;
+          max-width: 32px;
+         
+        }
+        .btn-primary{
+          min-width: 180px;
+        margin: auto;
+
+        }
+        .col-sm-8{
+          text-align: center;
+        }
+
+        .button{
+          min-width: 180px;
+          margin-right: 80px;
+      
+      width: 50%;
+      }
+
+        
+      }
+      @media (max-width: 600px) {
+
+      
+    .videoElement{
+        margin: 20px;
+        width: 100%;
+        height: auto;
+        
+      } 
+      .show-mobile {
+        display: inline;
+        max-width: 32px;
+      }
+      .hide-mobile {
+        display: none;
+        max-width: 32px;
+      }
+      .col-sm-8{
+          text-align: center;
+        }
+      .button{
+        min-width: 180px;
+        margin: auto;
+      width: 50%;
+      }
+
+      .footer{
+        font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .footerLink{
+      font-size: 17px;
+      color: #000000;
+    }
+    }
+
+ 
